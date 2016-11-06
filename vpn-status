@@ -1,0 +1,12 @@
+#!/bin/bash
+
+(ifconfig tun0 | grep -q UP) 2>/dev/null
+STATUS=$?
+
+if [ $STATUS != 0 ]; then
+    echo "Not connected"
+    exit 1
+else
+    echo "Connected"
+    exit 0
+fi

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+    echo "Provide username and password"
+    echo "usage: vpn username password"
+    exit 1
+fi
+
+USERNAME=$1
+PASSWORD=$2
+
+echo "Setting up PIA openvpn..."
+
+rm -rf ~/.openvpn-strong
+
+wget -q https://www.privateinternetaccess.com/openvpn/openvpn-strong.zip -P /tmp
+mkdir ~/.openvpn-strong
+unzip -q /tmp/openvpn-strong.zip -d ~/.openvpn-strong
+rm /tmp/openvpn-strong.zip
+
+touch ~/.openvpn-strong/credentials
+chmod 600 ~/.openvpn-strong/credentials
+
+echo "$USERNAME" >> ~/.openvpn-strong/credentials
+echo "$PASSWORD" >> ~/.openvpn-strong/credentials
+
+echo "Testing connection..."
+
+for i in {1..5}
+do
+    vpn &> /dev/null
+    STATUS=$?
+    if [ $STATUS == 0 ]; then
+        echo "Setup completed"
+        vpn-kill &> /dev/null
+        exit 0
+    else
+        echo "Could not connect. Retrying..."
+    fi
+done
+
+echo "Could not setup VPN. Check username and password."
+exit 1

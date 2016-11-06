@@ -1,0 +1,3 @@
+#!/bin/bash
+
+find ~/.openvpn-strong/ -name *.ovpn -printf "%f\n" | sed "s/\.ovpn//g" | sort

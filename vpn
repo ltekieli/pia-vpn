@@ -1,0 +1,45 @@
+#!/bin/bash
+
+vpn-kill &> /dev/null
+
+COUNTRY="$@"
+
+if [ -z "$COUNTRY" ]; then
+    FILENAME=$(find ~/.openvpn-strong/ -iname "*.ovpn" -type f | sort -R | head -n 1)
+else
+    FILENAME=$(find ~/.openvpn-strong/ -iname "*$COUNTRY*.ovpn" -type f | sort | head -n 1)
+fi
+
+if [ -z "$FILENAME" ]; then
+   echo "Could not find requested VPN endpoint"
+   exit 1
+fi
+
+ENDPOINT=$(basename "$FILENAME")
+echo "Connecting to ${ENDPOINT%.*}"
+
+sudo openvpn --cd ~/.openvpn-strong \
+             --config "$FILENAME" \
+             --auth-user-pass ~/.openvpn-strong/credentials \
+             --daemon
+STATUS=$?
+
+if [ $STATUS != 0 ]; then
+    echo "Invalid parameter"
+    exit 1
+fi
+
+for i in {1..60}
+do
+    vpn-status &> /dev/null
+    STATUS=$?
+    if [ $STATUS == 0 ]; then
+        echo "Connected"
+        exit 0
+    fi
+    sleep 1
+done
+
+echo "Could not connect"
+vpn-kill &> /dev/null
+exit 1
