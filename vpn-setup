@@ -2,7 +2,7 @@
 
 if [ "$#" -ne 2 ]; then
     echo "Provide username and password"
-    echo "usage: vpn username password"
+    echo "usage: vpn-setup username password"
     exit 1
 fi
 
