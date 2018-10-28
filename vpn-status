@@ -1,6 +1,6 @@
 #!/bin/bash
 
-(ifconfig tun0 | grep -q UP) 2>/dev/null
+(ip -f inet addr | grep tun0 | grep -q UP) 2>/dev/null
 STATUS=$?
 
 if [ $STATUS != 0 ]; then

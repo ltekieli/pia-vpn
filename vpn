@@ -21,8 +21,8 @@ echo "Connecting to ${ENDPOINT%.*}"
 sudo openvpn --cd ~/.openvpn-strong \
              --config "$FILENAME" \
              --auth-user-pass ~/.openvpn-strong/credentials \
-             --up /etc/openvpn/update-resolv-conf \
-             --down /etc/openvpn/update-resolv-conf \
+             --up /etc/openvpn/update-systemd-resolved \
+             --down /etc/openvpn/update-systemd-resolved \
              --script-security 2 \
              --daemon
 STATUS=$?
